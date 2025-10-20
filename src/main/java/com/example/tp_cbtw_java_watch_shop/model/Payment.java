@@ -3,6 +3,8 @@ package com.example.tp_cbtw_java_watch_shop.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "payment")
@@ -14,7 +16,7 @@ public class Payment {
 
     private Long orderId;
     private Double amount;
-    private String paymentDate;
+    private LocalDateTime paymentDate;
     private PaymentStatus status;
 
     public enum PaymentStatus {

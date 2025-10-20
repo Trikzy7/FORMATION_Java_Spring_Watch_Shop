@@ -51,4 +51,9 @@ public class OrderItemService {
                 .orElseThrow(() -> new RuntimeException("OrderItem not found with id: " + id));
         orderItemRepository.delete(existing);
     }
+
+    // Récupérer tous les OrderItems d'une commande
+    public List<OrderItem> getItemsByOrderId(Long orderId) {
+        return orderItemRepository.findByOrderId(orderId);
+    }
 }

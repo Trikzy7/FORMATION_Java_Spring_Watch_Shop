@@ -52,4 +52,10 @@ public class OrderItemController {
         orderItemService.deleteOrderItem(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // GET /api/order-items/order/{orderId}
+    @GetMapping("/order/{orderId}")
+    public List<OrderItem> getItemsByOrder(@PathVariable Long orderId) {
+        return orderItemService.getItemsByOrderId(orderId);
+    }
 }

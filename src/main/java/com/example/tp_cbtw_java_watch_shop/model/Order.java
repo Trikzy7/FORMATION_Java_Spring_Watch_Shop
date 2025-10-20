@@ -1,5 +1,6 @@
 package com.example.tp_cbtw_java_watch_shop.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class Order {
     private Long userId;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<OrderItem> orderItems;
 
     private LocalDateTime orderDate;

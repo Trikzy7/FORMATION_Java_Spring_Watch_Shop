@@ -67,4 +67,9 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
         orderRepository.delete(order);
     }
+
+    public Order getOrderByIdEntity(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+    }
 }
