@@ -103,4 +103,9 @@ public class UserService {
         return UserMapper.toDto(updated);
     }
 
+    public User getUserEntityById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet ID"));
+    }
+
 }
