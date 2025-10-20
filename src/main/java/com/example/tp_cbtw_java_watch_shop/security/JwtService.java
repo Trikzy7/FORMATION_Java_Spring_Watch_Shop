@@ -1,5 +1,7 @@
 package com.example.tp_cbtw_java_watch_shop.security;
 
+import com.example.tp_cbtw_java_watch_shop.model.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -13,11 +15,21 @@ public class JwtService {
 
     private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(String email) {
+//    public String generateToken(String email) {
+//        return Jwts.builder()
+//                .setSubject(email)
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1h
+//                .signWith(secretKey)
+//                .compact();
+//    }
+
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getUsername())
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1h
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(secretKey)
                 .compact();
     }
@@ -43,5 +55,13 @@ public class JwtService {
                 .getBody()
                 .getExpiration()
                 .before(new Date());
+    }
+
+    public Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)   // clé utilisée pour signer le JWT
+                .build()
+                .parseClaimsJws(token)      // parse le token et vérifie sa signature
+                .getBody();                 // renvoie le payload sous forme de Claims
     }
 }

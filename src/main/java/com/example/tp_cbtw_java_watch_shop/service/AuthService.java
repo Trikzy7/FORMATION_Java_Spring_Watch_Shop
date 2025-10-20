@@ -2,6 +2,9 @@ package com.example.tp_cbtw_java_watch_shop.service;
 
 import com.example.tp_cbtw_java_watch_shop.dto.LoginRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.LoginResponseDTO;
+import com.example.tp_cbtw_java_watch_shop.dto.UserRequestDTO;
+import com.example.tp_cbtw_java_watch_shop.dto.UserResponseDTO;
+import com.example.tp_cbtw_java_watch_shop.mapper.UserMapper;
 import com.example.tp_cbtw_java_watch_shop.model.User;
 import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +31,7 @@ public class AuthService {
         }
 
         // Génération du token avec JwtService
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user);
 
         LoginResponseDTO response = new LoginResponseDTO();
         response.setToken(token);
@@ -38,4 +41,21 @@ public class AuthService {
 
         return response;
     }
+
+    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
+        // Save in database
+        UserResponseDTO savedUser = userService.createUser(userRequestDTO);
+
+        // Convert Entity -> ResponseDTO
+        return savedUser;
+    }
+
+    public UserResponseDTO registerAdminUser(UserRequestDTO userRequestDTO) {
+        // Save in database
+        UserResponseDTO savedUser = userService.createAdminUser(userRequestDTO);
+
+        // Convert Entity -> ResponseDTO
+        return savedUser;
+    }
+
 }

@@ -9,6 +9,7 @@ import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,17 +55,13 @@ public class UserController {
 //    }
 
     // Delete user by ID
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRequestDTO dto) {
-        UserResponseDTO createdUser = userService.registerUser(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }
 
     // Récupérer son profil
     @GetMapping("/me")
@@ -86,9 +83,16 @@ public class UserController {
         String email = jwtService.extractEmail(token);
 
         User user = userService.findByEmail(email);
-        UserResponseDTO updated = userService.updateUser(user.getId(), dto);
+        UserResponseDTO updated = userService.updateProfile(user.getId(), dto);
 
         return ResponseEntity.ok(updated);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+        UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
 }

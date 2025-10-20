@@ -1,15 +1,8 @@
 package com.example.tp_cbtw_java_watch_shop.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
 
 import java.util.List;
 
@@ -28,7 +21,7 @@ public class Watch {
     private Double price;
     private String imageUrl;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "watch_specificity",
             joinColumns = @JoinColumn(name = "watch_id"),

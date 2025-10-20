@@ -29,6 +29,16 @@ public class UserService {
     // Create
     public UserResponseDTO createUser(UserRequestDTO requestDTO) {
         User user = UserMapper.toEntity(requestDTO);
+        user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        user.setRole("USER");
+        User saved = userRepository.save(user);
+        return UserMapper.toDto(saved);
+    }
+
+    public UserResponseDTO createAdminUser(UserRequestDTO requestDTO) {
+        User user = UserMapper.toEntity(requestDTO);
+        user.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        user.setRole("ROLE_ADMIN");
         User saved = userRepository.save(user);
         return UserMapper.toDto(saved);
     }
@@ -55,17 +65,17 @@ public class UserService {
     }
 
     // Update
-//    public UserResponseDTO updateUser(Long id, UserRequestDTO requestDTO) {
-//        User existing = userRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-//
-//        existing.setUsername(requestDTO.getUsername());
-//        existing.setEmail(requestDTO.getEmail());
-//        existing.setPassword(requestDTO.getPassword());
-//
-//        User updated = userRepository.save(existing);
-//        return UserMapper.toDto(updated);
-//    }
+    public UserResponseDTO updateUser(Long id, UserRequestDTO requestDTO) {
+        User existing = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        existing.setUsername(requestDTO.getUsername());
+        existing.setEmail(requestDTO.getEmail());
+        existing.setPassword(requestDTO.getPassword());
+
+        User updated = userRepository.save(existing);
+        return UserMapper.toDto(updated);
+    }
 
     // Delete
     public void deleteUser(Long id) {
@@ -74,23 +84,9 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
-        // Convert DTO -> Entity
-        User user = new User();
-        user.setUsername(userRequestDTO.getUsername());
-        user.setEmail(userRequestDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-        user.setRole("USER");
-
-        // Save in database
-        User savedUser = userRepository.save(user);
-
-        // Convert Entity -> ResponseDTO
-        return UserMapper.toDto(savedUser);
-    }
 
     // Mettre à jour le profil
-    public UserResponseDTO updateUser(Long id, UserUpdateDTO dto) {
+    public UserResponseDTO updateProfile(Long id, UserUpdateDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet ID"));
 
@@ -106,6 +102,13 @@ public class UserService {
     public User getUserEntityById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet ID"));
+    }
+
+    // Méthode pour récupérer le rôle d'un utilisateur via son username
+    public String getUserRoleByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return user.getRole();
     }
 
 }
