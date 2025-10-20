@@ -2,6 +2,7 @@ package com.example.tp_cbtw_java_watch_shop.service;
 
 import com.example.tp_cbtw_java_watch_shop.dto.UserRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.UserResponseDTO;
+import com.example.tp_cbtw_java_watch_shop.dto.UserUpdateDTO;
 import com.example.tp_cbtw_java_watch_shop.mapper.UserMapper;
 import com.example.tp_cbtw_java_watch_shop.model.User;
 import com.example.tp_cbtw_java_watch_shop.repository.UserRepository;
@@ -54,17 +55,17 @@ public class UserService {
     }
 
     // Update
-    public UserResponseDTO updateUser(Long id, UserRequestDTO requestDTO) {
-        User existing = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        existing.setUsername(requestDTO.getUsername());
-        existing.setEmail(requestDTO.getEmail());
-        existing.setPassword(requestDTO.getPassword());
-
-        User updated = userRepository.save(existing);
-        return UserMapper.toDto(updated);
-    }
+//    public UserResponseDTO updateUser(Long id, UserRequestDTO requestDTO) {
+//        User existing = userRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+//
+//        existing.setUsername(requestDTO.getUsername());
+//        existing.setEmail(requestDTO.getEmail());
+//        existing.setPassword(requestDTO.getPassword());
+//
+//        User updated = userRepository.save(existing);
+//        return UserMapper.toDto(updated);
+//    }
 
     // Delete
     public void deleteUser(Long id) {
@@ -88,6 +89,18 @@ public class UserService {
         return UserMapper.toDto(savedUser);
     }
 
+    // Mettre à jour le profil
+    public UserResponseDTO updateUser(Long id, UserUpdateDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet ID"));
 
+        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+        if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        User updated = userRepository.save(user);
+        return UserMapper.toDto(updated);
+    }
 
 }

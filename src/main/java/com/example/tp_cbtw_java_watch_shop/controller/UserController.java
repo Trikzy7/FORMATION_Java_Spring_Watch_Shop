@@ -2,6 +2,10 @@ package com.example.tp_cbtw_java_watch_shop.controller;
 
 import com.example.tp_cbtw_java_watch_shop.dto.UserRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.UserResponseDTO;
+import com.example.tp_cbtw_java_watch_shop.dto.UserUpdateDTO;
+import com.example.tp_cbtw_java_watch_shop.mapper.UserMapper;
+import com.example.tp_cbtw_java_watch_shop.model.User;
+import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +18,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     // Create a new user
@@ -41,11 +47,11 @@ public class UserController {
     }
 
     // Update user by ID
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+//        UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
+//        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+//    }
 
     // Delete user by ID
     @DeleteMapping("/{id}")
@@ -58,6 +64,31 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRequestDTO dto) {
         UserResponseDTO createdUser = userService.registerUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    }
+
+    // Récupérer son profil
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getProfile(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtService.extractEmail(token);
+
+        User user = userService.findByEmail(email);
+        return ResponseEntity.ok(UserMapper.toDto(user));
+    }
+
+    // Mettre à jour son profil
+    @PutMapping("/me")
+    public ResponseEntity<UserResponseDTO> updateProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody UserUpdateDTO dto) {
+
+        String token = authHeader.replace("Bearer ", "");
+        String email = jwtService.extractEmail(token);
+
+        User user = userService.findByEmail(email);
+        UserResponseDTO updated = userService.updateUser(user.getId(), dto);
+
+        return ResponseEntity.ok(updated);
     }
 
 }

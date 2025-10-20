@@ -35,8 +35,8 @@ public class SecurityConfig {
                     .csrf(csrf -> csrf.disable())
                     .cors(cors -> {})
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/auth/**", "/api/users/register/**").permitAll()
-                            .requestMatchers("/watches/**", "/watch-models/**").authenticated()
+                            .requestMatchers("/api/auth/**", "/api/users/register/**").permitAll()
+                            .requestMatchers("/api/**").authenticated()
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                             .anyRequest().authenticated()
                     )
