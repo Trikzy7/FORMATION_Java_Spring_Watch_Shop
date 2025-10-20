@@ -3,6 +3,7 @@ package com.example.tp_cbtw_java_watch_shop.controller;
 import com.example.tp_cbtw_java_watch_shop.dto.OrderRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.OrderResponseDTO;
 import com.example.tp_cbtw_java_watch_shop.model.OrderItem;
+import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,11 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final JwtService jwtService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, JwtService jwtService) {
         this.orderService = orderService;
+        this.jwtService = jwtService;
     }
 
     // Create a new order (status + userId)
@@ -60,4 +63,20 @@ public class OrderController {
         orderService.deleteOrder(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // GET /api/orders/history/{userId}
+//    @GetMapping("/history/{userId}")
+//    public List<OrderResponseDTO> getUserOrderHistory(@PathVariable Long userId) {
+//        return orderService.getOrdersByUserId(userId);
+//    }
+
+    // GET /api/orders/history
+    @GetMapping("/history")
+    public List<OrderResponseDTO> getUserOrderHistory(@RequestHeader("Authorization") String authHeader) {
+
+        // Renvoyer ses commandes
+        return orderService.getOrdersByUserId(authHeader);
+    }
+
+
 }

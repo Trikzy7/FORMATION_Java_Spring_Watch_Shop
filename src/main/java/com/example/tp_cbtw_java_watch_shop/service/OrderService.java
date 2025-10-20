@@ -7,6 +7,7 @@ import com.example.tp_cbtw_java_watch_shop.model.Order;
 import com.example.tp_cbtw_java_watch_shop.model.OrderItem;
 import com.example.tp_cbtw_java_watch_shop.repository.OrderRepository;
 import com.example.tp_cbtw_java_watch_shop.repository.OrderItemRepository;
+import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderItemRepository orderItemRepository) {
+    private final JwtService jwtService;
+    private final UserService userService;
+
+    public OrderService(OrderRepository orderRepository, OrderItemRepository orderItemRepository, JwtService jwtService, UserService userService) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
+        this.jwtService = jwtService;
+        this.userService = userService;
     }
 
     // Create
@@ -71,5 +77,17 @@ public class OrderService {
     public Order getOrderByIdEntity(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+    }
+
+    // Historique des commandes d'un utilisateur
+    public List<OrderResponseDTO> getOrdersByUserId(String authHeader) {
+
+        String email = jwtService.extractEmail(authHeader.replace("Bearer ", ""));
+        Long userId = userService.findByEmail(email).getId();
+
+        return orderRepository.findByUserId(userId)
+                .stream()
+                .map(OrderMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
