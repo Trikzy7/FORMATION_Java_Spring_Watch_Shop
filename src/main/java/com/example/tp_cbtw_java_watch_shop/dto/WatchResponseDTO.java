@@ -12,7 +12,6 @@ public class WatchResponseDTO {
     private String brand;
     private String description;
     private Double price;
-    private int quantity;
     private String imageUrl;
     private List<Specificity> specificities;
     private String category;

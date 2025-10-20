@@ -7,6 +7,8 @@ import com.example.tp_cbtw_java_watch_shop.model.User;
 import com.example.tp_cbtw_java_watch_shop.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +18,11 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     // Create
@@ -43,6 +47,12 @@ public class UserService {
         return UserMapper.toDto(user);
     }
 
+    public User findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        return user;
+    }
+
     // Update
     public UserResponseDTO updateUser(Long id, UserRequestDTO requestDTO) {
         User existing = userRepository.findById(id)
@@ -62,5 +72,22 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         userRepository.delete(user);
     }
+
+    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO) {
+        // Convert DTO -> Entity
+        User user = new User();
+        user.setUsername(userRequestDTO.getUsername());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        user.setRole("USER");
+
+        // Save in database
+        User savedUser = userRepository.save(user);
+
+        // Convert Entity -> ResponseDTO
+        return UserMapper.toDto(savedUser);
+    }
+
+
 
 }

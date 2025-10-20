@@ -1,0 +1,9 @@
+security:
+  enabled: true
+
+cors:
+  allowed-origins: https://mon-site-prod.com
+
+logging:
+  level:
+    root: WARN

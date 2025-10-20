@@ -52,7 +52,6 @@ public class WatchService {
         existing.setBrand(requestDTO.getBrand());
         existing.setDescription(requestDTO.getDescription());
         existing.setPrice(requestDTO.getPrice());
-        existing.setQuantity(requestDTO.getQuantity());
         existing.setImageUrl(requestDTO.getImageUrl());
         existing.setSpecificities(requestDTO.getSpecificities());
         existing.setCategory(requestDTO.getCategory());
@@ -66,5 +65,12 @@ public class WatchService {
         Watch watch = watchRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Watch not found with id: " + id));
         watchRepository.delete(watch);
+    }
+
+    public List<WatchResponseDTO> filterWatches(String brand, String category, Double minPrice, Double maxPrice) {
+        return watchRepository.filterWatches(brand, category, minPrice, maxPrice)
+                .stream()
+                .map(WatchMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

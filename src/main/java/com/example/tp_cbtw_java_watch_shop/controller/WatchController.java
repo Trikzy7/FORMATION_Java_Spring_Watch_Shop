@@ -53,4 +53,14 @@ public class WatchController {
         watchService.deleteWatch(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/filter")
+    public List<WatchResponseDTO> filterWatches(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice
+    ) {
+        return watchService.filterWatches(brand, category, minPrice, maxPrice);
+    }
 }

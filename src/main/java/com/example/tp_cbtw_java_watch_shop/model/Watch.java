@@ -1,5 +1,6 @@
 package com.example.tp_cbtw_java_watch_shop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -25,7 +26,6 @@ public class Watch {
     private String brand;
     private String description;
     private Double price;
-    private int quantity;
     private String imageUrl;
 
     @ManyToMany
@@ -34,6 +34,7 @@ public class Watch {
             joinColumns = @JoinColumn(name = "watch_id"),
             inverseJoinColumns = @JoinColumn(name = "specificity_id")
     )
+    @JsonBackReference
     private List<Specificity> specificities;
 
     private String category;

@@ -1,5 +1,6 @@
 package com.example.tp_cbtw_java_watch_shop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -17,5 +18,6 @@ public class Specificity {
     private String value;
 
     @ManyToMany(mappedBy = "specificities")
+    @JsonBackReference
     private List<Watch> watches;
 }
