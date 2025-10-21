@@ -3,6 +3,7 @@ package com.example.tp_cbtw_java_watch_shop.controller;
 import com.example.tp_cbtw_java_watch_shop.dto.WatchRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.WatchResponseDTO;
 import com.example.tp_cbtw_java_watch_shop.service.WatchService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +24,7 @@ public class WatchController {
     // Create a new watch
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<WatchResponseDTO> createWatch(@RequestBody WatchRequestDTO watchRequestDTO) {
+    public ResponseEntity<WatchResponseDTO> createWatch(@Valid @RequestBody WatchRequestDTO watchRequestDTO) {
         WatchResponseDTO createdWatch = watchService.createWatch(watchRequestDTO);
         return new ResponseEntity<>(createdWatch, HttpStatus.CREATED);
     }
@@ -45,7 +46,7 @@ public class WatchController {
     // Update watch by ID
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<WatchResponseDTO> updateWatch(@PathVariable Long id, @RequestBody WatchRequestDTO watchRequestDTO) {
+    public ResponseEntity<WatchResponseDTO> updateWatch(@PathVariable Long id, @Valid @RequestBody WatchRequestDTO watchRequestDTO) {
         WatchResponseDTO updatedWatch = watchService.updateWatch(id, watchRequestDTO);
         return new ResponseEntity<>(updatedWatch, HttpStatus.OK);
     }

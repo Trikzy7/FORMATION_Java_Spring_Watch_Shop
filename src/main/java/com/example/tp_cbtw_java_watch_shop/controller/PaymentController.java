@@ -7,6 +7,7 @@ import com.example.tp_cbtw_java_watch_shop.model.User;
 import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.PaymentService;
 import com.example.tp_cbtw_java_watch_shop.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class PaymentController {
     }
     // Create payment
     @PostMapping
-    public ResponseEntity<PaymentResponseDTO> createPayment(@RequestBody PaymentRequestDTO payment) {
+    public ResponseEntity<PaymentResponseDTO> createPayment(@Valid @RequestBody PaymentRequestDTO payment) {
         PaymentResponseDTO created = paymentService.createPayment(payment);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -47,7 +48,7 @@ public class PaymentController {
 
     // Update payment by ID
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentRequestDTO payment) {
+    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @Valid @RequestBody PaymentRequestDTO payment) {
         return new ResponseEntity<>(paymentService.updatePayment(id, payment), HttpStatus.OK);
     }
 

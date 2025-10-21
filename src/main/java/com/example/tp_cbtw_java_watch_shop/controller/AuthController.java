@@ -5,6 +5,7 @@ import com.example.tp_cbtw_java_watch_shop.dto.LoginResponseDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.UserRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.UserResponseDTO;
 import com.example.tp_cbtw_java_watch_shop.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,17 +22,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         LoginResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserRequestDTO dto) {
         UserResponseDTO createdUser = authService.registerUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
     @PostMapping("/register/admin")
-    public ResponseEntity<UserResponseDTO> registerAdminUser(@RequestBody UserRequestDTO dto) {
+    public ResponseEntity<UserResponseDTO> registerAdminUser(@Valid @RequestBody UserRequestDTO dto) {
         UserResponseDTO createdUser = authService.registerAdminUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }

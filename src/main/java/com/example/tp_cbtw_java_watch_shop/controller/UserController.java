@@ -7,6 +7,7 @@ import com.example.tp_cbtw_java_watch_shop.mapper.UserMapper;
 import com.example.tp_cbtw_java_watch_shop.model.User;
 import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class UserController {
 
     // Create a new user
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         UserResponseDTO createdUser = userService.createUser(userRequestDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
@@ -77,7 +78,7 @@ public class UserController {
     @PutMapping("/me")
     public ResponseEntity<UserResponseDTO> updateProfile(
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody UserUpdateDTO dto) {
+            @Valid @RequestBody UserUpdateDTO dto) {
 
         String token = authHeader.replace("Bearer ", "");
         String email = jwtService.extractEmail(token);
@@ -90,7 +91,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequestDTO) {
         UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }

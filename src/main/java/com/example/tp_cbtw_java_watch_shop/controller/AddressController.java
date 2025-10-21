@@ -5,6 +5,7 @@ import com.example.tp_cbtw_java_watch_shop.dto.AddressResponseDTO;
 import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.AddressService;
 import com.example.tp_cbtw_java_watch_shop.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class AddressController {
 
     @PostMapping
     public ResponseEntity<AddressResponseDTO> addAddress(@RequestHeader("Authorization") String authHeader,
-                                                         @RequestBody AddressRequestDTO dto) {
+                                                         @Valid @RequestBody AddressRequestDTO dto) {
         String email = jwtService.extractEmail(authHeader.replace("Bearer ", ""));
         Long userId = userService.findByEmail(email).getId();
         return ResponseEntity.ok(addressService.addAddress(userId, dto));
@@ -43,7 +44,7 @@ public class AddressController {
     @PutMapping("/{id}")
     public ResponseEntity<AddressResponseDTO> updateAddress(@RequestHeader("Authorization") String authHeader,
                                                             @PathVariable Long id,
-                                                            @RequestBody AddressRequestDTO dto) {
+                                                            @Valid @RequestBody AddressRequestDTO dto) {
         String email = jwtService.extractEmail(authHeader.replace("Bearer ", ""));
         Long userId = userService.findByEmail(email).getId();
 

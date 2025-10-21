@@ -5,6 +5,7 @@ import com.example.tp_cbtw_java_watch_shop.dto.OrderResponseDTO;
 import com.example.tp_cbtw_java_watch_shop.model.OrderItem;
 import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +27,7 @@ public class OrderController {
 
     // Create a new order (status + userId)
     @PostMapping
-    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderRequestDTO requestDTO) {
+    public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO requestDTO) {
         // Création simple de l’Order, sans OrderItems pour l’instant
         OrderResponseDTO createdOrder = orderService.createOrder(requestDTO, List.of());
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
