@@ -19,6 +19,7 @@ public class Watch {
     private String brand;
     private String description;
     private Double price;
+    private int stockQuantity;
     private String imageUrl;
 
     @ManyToMany(cascade = CascadeType.ALL)

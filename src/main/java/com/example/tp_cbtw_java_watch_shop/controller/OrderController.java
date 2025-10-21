@@ -2,9 +2,12 @@ package com.example.tp_cbtw_java_watch_shop.controller;
 
 import com.example.tp_cbtw_java_watch_shop.dto.OrderRequestDTO;
 import com.example.tp_cbtw_java_watch_shop.dto.OrderResponseDTO;
+import com.example.tp_cbtw_java_watch_shop.model.Order;
 import com.example.tp_cbtw_java_watch_shop.model.OrderItem;
+import com.example.tp_cbtw_java_watch_shop.model.User;
 import com.example.tp_cbtw_java_watch_shop.security.JwtService;
 import com.example.tp_cbtw_java_watch_shop.service.OrderService;
+import com.example.tp_cbtw_java_watch_shop.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +23,32 @@ public class OrderController {
     private final OrderService orderService;
     private final JwtService jwtService;
 
-    public OrderController(OrderService orderService, JwtService jwtService) {
+    private UserService userService;
+
+    public OrderController(OrderService orderService, JwtService jwtService, UserService userService) {
         this.orderService = orderService;
         this.jwtService = jwtService;
+        this.userService = userService;
     }
 
     // Create a new order (status + userId)
+//    @PostMapping
+//    public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO requestDTO) {
+//        // Création simple de l’Order, sans OrderItems pour l’instant
+//        OrderResponseDTO createdOrder = orderService.createOrder(requestDTO, List.of());
+//        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+//    }
+
     @PostMapping
-    public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO requestDTO) {
-        // Création simple de l’Order, sans OrderItems pour l’instant
-        OrderResponseDTO createdOrder = orderService.createOrder(requestDTO, List.of());
+    public ResponseEntity<Order> createOrder(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody List<OrderItem> items) {
+
+        // Extraire l’utilisateur connecté à partir du token JWT
+        String email = jwtService.extractEmail(authHeader.replace("Bearer ", ""));
+        User user = userService.findByEmail(email);
+
+        Order createdOrder = orderService.createOrder(user.getId(), items);
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 

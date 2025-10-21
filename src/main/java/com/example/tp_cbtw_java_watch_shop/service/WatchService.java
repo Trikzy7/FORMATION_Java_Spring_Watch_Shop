@@ -73,4 +73,27 @@ public class WatchService {
                 .map(WatchMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 🔹 Récupère une entité Watch depuis la base de données.
+     * @param id identifiant de la montre
+     * @return l’entité Watch correspondante
+     * @throws RuntimeException si la montre n’existe pas
+     */
+    public Watch getWatchEntityById(Long id) {
+        return watchRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Montre non trouvée avec l'id : " + id));
+    }
+
+    /**
+     * 🔹 Met à jour uniquement le stock d’une montre.
+     * @param id identifiant de la montre
+     * @param newStock nouvelle quantité en stock
+     * @throws RuntimeException si la montre n’existe pas
+     */
+    public void updateWatchStock(Long id, int newStock) {
+        Watch watch = getWatchEntityById(id);
+        watch.setStockQuantity(newStock);
+        watchRepository.save(watch);
+    }
 }

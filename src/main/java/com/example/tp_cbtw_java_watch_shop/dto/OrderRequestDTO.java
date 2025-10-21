@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class OrderRequestDTO {
 
-    @NotBlank(message = "userId est requis")
+//    @NotBlank(message = "userId est requis")
     private Long userId;
 
     private LocalDateTime orderDate;
