@@ -75,7 +75,7 @@ public class WatchService {
     }
 
     /**
-     * 🔹 Récupère une entité Watch depuis la base de données.
+     * Récupère une entité Watch depuis la base de données.
      * @param id identifiant de la montre
      * @return l’entité Watch correspondante
      * @throws RuntimeException si la montre n’existe pas
@@ -86,7 +86,7 @@ public class WatchService {
     }
 
     /**
-     * 🔹 Met à jour uniquement le stock d’une montre.
+     * Met à jour uniquement le stock d’une montre.
      * @param id identifiant de la montre
      * @param newStock nouvelle quantité en stock
      * @throws RuntimeException si la montre n’existe pas
@@ -94,6 +94,38 @@ public class WatchService {
     public void updateWatchStock(Long id, int newStock) {
         Watch watch = getWatchEntityById(id);
         watch.setStockQuantity(newStock);
+        watchRepository.save(watch);
+    }
+
+    /**
+     * 🔹 Décrémente le stock d'une montre.
+     * @param id identifiant de la montre
+     * @param quantityToRemove quantité à retirer du stock
+     * @throws RuntimeException si le stock est insuffisant
+     */
+    public void decreaseWatchStock(Long id, int quantityToRemove) {
+        Watch watch = getWatchEntityById(id);
+
+        if (watch.getStockQuantity() < quantityToRemove) {
+            throw new RuntimeException("Stock insuffisant pour la montre : " + watch.getName());
+        }
+
+        watch.setStockQuantity(watch.getStockQuantity() - quantityToRemove);
+        watchRepository.save(watch);
+    }
+
+    /**
+     * Augmente le stock d'une montre.
+     * @param id identifiant de la montre
+     * @param quantityToAdd quantité à ajouter
+     */
+    public void increaseWatchStock(Long id, int quantityToAdd) {
+        if (quantityToAdd <= 0) {
+            throw new IllegalArgumentException("La quantité à ajouter doit être positive");
+        }
+
+        Watch watch = getWatchEntityById(id);
+        watch.setStockQuantity(watch.getStockQuantity() + quantityToAdd);
         watchRepository.save(watch);
     }
 }
